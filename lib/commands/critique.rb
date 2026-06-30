@@ -42,6 +42,10 @@ class Critique
       puts "Critiquing..."
       puts critique(@images[0])
     end
+  ensure
+    # Free the vision model no matter which mode ran or whether it raised, so a
+    # crash never leaves it resident (smoke runs models one at a time).
+    system("ollama stop #{Config::VISION_MODEL}", out: File::NULL, err: File::NULL)
   end
 
   private
@@ -123,7 +127,6 @@ class Critique
       messages << {role: "assistant", content: reply}
     end
 
-    system("ollama stop #{Config::VISION_MODEL}")
     puts "\nChat ended."
   end
 end

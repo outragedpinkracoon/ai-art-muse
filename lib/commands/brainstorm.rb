@@ -23,6 +23,10 @@ class Brainstorm
   def run
     abort BRAINSTORM_USAGE if @seed.empty?
     brainstorm_loop(@seed)
+  ensure
+    # Free the model no matter how the loop ended (finished, crashed, ^C), so a
+    # crash never leaves it resident (smoke runs models one at a time).
+    system("ollama stop #{Config::BRAINSTORM_MODEL}", out: File::NULL, err: File::NULL)
   end
 
   private
@@ -62,7 +66,6 @@ class Brainstorm
     messages << {role: "user", content: "Now finalize. Output only the Flux prompt."}
     final = brainstorm_chat(messages)
 
-    system("ollama stop #{Config::BRAINSTORM_MODEL}")
     puts "\n#{"-" * 60}\nFinal Flux prompt:\n\n#{final}\n\nRun it:\n  muse generate #{final.inspect}"
   end
 end

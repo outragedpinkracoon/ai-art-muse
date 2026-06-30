@@ -66,6 +66,8 @@ ollama pull qwen2.5:3b                                                      # un
 ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: brainstorm
 ```
 
+Run `muse models` anytime to see which models are configured, which are required, and what each one unlocks.
+
 ### Put `muse` on your PATH
 
 So you can type `muse` from anywhere instead of `./muse` from the repo:

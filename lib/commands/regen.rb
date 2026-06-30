@@ -65,11 +65,16 @@ class Regen
   def fuse(subject, style)
     system_prompt = Prompts.load_prompt("regen.txt")
     user = "STYLE:\n#{style}\n\nSUBJECT:\n#{subject}"
-    fused = Ollama.chat(Config::REGEN_MODEL, [
-      {role: "system", content: system_prompt},
-      {role: "user", content: user}
-    ])
-    system("ollama stop #{Config::REGEN_MODEL}")
+    fused = begin
+      Ollama.chat(Config::REGEN_MODEL, [
+        {role: "system", content: system_prompt},
+        {role: "user", content: user}
+      ])
+    ensure
+      # Stop before returning to the mflux image step (or on crash), so the
+      # rewrite model never shares memory with flux (smoke runs one at a time).
+      system("ollama stop #{Config::REGEN_MODEL}", out: File::NULL, err: File::NULL)
+    end
     abort "Regen model returned nothing." if fused.nil? || fused.empty?
     fused
   end

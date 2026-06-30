@@ -62,11 +62,16 @@ class Restyle
   # string strip couldn't.
   def strip_style(prompt)
     system_prompt = Prompts.load_prompt("restyle.txt")
-    subject = Ollama.chat(Config::REGEN_MODEL, [
-      {role: "system", content: system_prompt},
-      {role: "user", content: "PROMPT:\n#{prompt}"}
-    ])
-    system("ollama stop #{Config::REGEN_MODEL}")
+    subject = begin
+      Ollama.chat(Config::REGEN_MODEL, [
+        {role: "system", content: system_prompt},
+        {role: "user", content: "PROMPT:\n#{prompt}"}
+      ])
+    ensure
+      # Stop before returning to the mflux image step (or on crash), so the
+      # rewrite model never shares memory with flux (smoke runs one at a time).
+      system("ollama stop #{Config::REGEN_MODEL}", out: File::NULL, err: File::NULL)
+    end
     abort "Restyle model returned nothing." if subject.nil? || subject.empty?
     subject
   end

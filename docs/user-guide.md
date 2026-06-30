@@ -20,6 +20,7 @@ All commands run through the `muse` executable in the repo root:
 - [Restyle](#restyle) — redraw with new style, same subject
 - [Brainstorm](#brainstorm) — develop a prompt with AI
 - [Critique](#critique) — vision model feedback and chat
+- [Models](#models) — which models run, and how to swap them
 
 ---
 
@@ -288,7 +289,7 @@ The model asks focused visual questions one at a time — subject, scene, action
 
 ### Model
 
-Uses the larger local text model (`BRAINSTORM_MODEL`), so the first question lags while it loads. Stopped automatically when the loop finishes.
+Uses the larger local text model (`BRAINSTORM_MODEL`), so the first question lags while it loads. Stopped automatically when the command exits — whether it finishes normally or errors out — so it never stays resident.
 
 ---
 
@@ -324,11 +325,38 @@ muse critique image_a.png image_b.png
 
 ### Model
 
-Uses the configured vision model (`VISION_MODEL`, `qwen2.5vl:7b`), loaded on demand and stopped automatically when a chat session ends.
+Uses the configured vision model (`VISION_MODEL`, `qwen2.5vl:7b`), loaded on demand and stopped automatically when the command exits — in every mode, and even if it errors out — so it never stays resident.
 
 ---
 
 ## Models
+
+Only the **image model is required** — it powers `generate` (and `--edit`). The
+three Ollama models are optional; each just unlocks one extra command, so pull
+only the ones you want.
+
+### See what's configured
+
+```bash
+muse models
+```
+
+Lists every model muse uses, grouped into required vs. optional, with the
+commands each one unlocks:
+
+```
+Models muse uses (configured in lib/config.rb):
+
+  REQUIRED
+    flux2-klein-4b                                                  generate, edit
+
+  OPTIONAL  (pull only what you want; each unlocks its commands)
+    qwen2.5vl:7b                                                    critique
+    qwen2.5:3b                                                      regen, restyle
+    hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   brainstorm
+```
+
+### Swapping a model
 
 Model names are hardcoded in `lib/config.rb`, not environment variables — edit that file to swap any of them:
 

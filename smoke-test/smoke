@@ -30,9 +30,9 @@ set -euo pipefail
 # and smoke-test/smoke_error.txt resolve where the rest of the tooling expects.
 cd "$(dirname "$0")/.."
 
-VISION_MODEL="qwen2.5vl:7b"
-BRAINSTORM_MODEL="hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M"
-REGEN_MODEL="qwen2.5:3b"
+# Each muse command stops its own ollama model in an `ensure` block (crash-safe),
+# so this script doesn't re-stop them — and therefore doesn't hardcode model
+# names. Swapping a model is a one-file edit in lib/config.rb. See `muse models`.
 
 # Fixed inputs for the vision steps — committed, so they don't depend on a
 # generate run landing first.
@@ -161,7 +161,6 @@ if want regen; then
   IMG=$(last_saved)
   [ -n "$IMG" ] && [ "$IMG" != "$FIX_SEED" ] && [ -s "$IMG" ] || fail "no image produced by regen"
   ok "regenerated $FIX_SEED -> $IMG"
-  ollama stop "$REGEN_MODEL" >/dev/null 2>&1 || true
 fi
 
 # --- mflux + ollama: restyle --------------------------------------------------
@@ -173,7 +172,6 @@ if want restyle; then
   IMG=$(last_saved)
   [ -n "$IMG" ] && [ "$IMG" != "$FIX_SEED" ] && [ -s "$IMG" ] || fail "no image produced by restyle"
   ok "restyled $FIX_SEED -> $IMG"
-  ollama stop "$REGEN_MODEL" >/dev/null 2>&1 || true
 fi
 
 # flux is done; nothing to stop (mflux is not a resident model).
@@ -208,18 +206,12 @@ if want chat; then
   ok "chat returned -> $MUSE_OUTPUT_DIR/chat.txt"
 fi
 
-# Stop the vision model if any vision step ran.
-if want single || want compare || want ask || want chat; then
-  ollama stop "$VISION_MODEL" >/dev/null 2>&1 || true
-fi
-
 # --- text: brainstorm (finish immediately with `done`) ------------------------
 # Run last and alone — gemma is large; nothing else is loaded by now.
 if want brainstorm; then
   step "muse brainstorm (finalize early)"
   printf 'done\n' | say_run brainstorm ./muse brainstorm "a cat pirate" || fail "brainstorm exited nonzero"
   ok "brainstorm returned a prompt -> $MUSE_OUTPUT_DIR/brainstorm.txt"
-  ollama stop "$BRAINSTORM_MODEL" >/dev/null 2>&1 || true
 fi
 
 : > "$LOG"   # clean pass — nothing to keep

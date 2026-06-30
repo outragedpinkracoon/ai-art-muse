@@ -14,7 +14,8 @@ COMMANDS = {
   "regen" => ["lib/commands/regen", "Regen"],
   "restyle" => ["lib/commands/restyle", "Restyle"],
   "brainstorm" => ["lib/commands/brainstorm", "Brainstorm"],
-  "critique" => ["lib/commands/critique", "Critique"]
+  "critique" => ["lib/commands/critique", "Critique"],
+  "models" => ["lib/commands/models", "Models"]
 }
 
 def usage
@@ -27,6 +28,7 @@ def usage
       restyle      redraw an image's subject+seed in a different style
       brainstorm   chat to develop a Flux prompt from a rough idea
       critique     critique / compare / chat about an image (vision model)
+      models       list the configured models and what each unlocks
 
     Run `muse <command>` with no args for that command's own usage.
   USAGE

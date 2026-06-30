@@ -86,6 +86,7 @@ ruby --version              # 3.0 or newer
 mflux-generate-flux2 --help # mflux is installed and on PATH
 echo $HF_TOKEN              # non-empty
 ollama list                 # optional — lists whichever optional models you pulled
+./muse models               # what muse expects: required vs optional, and what each unlocks
 ```
 
 ### Put `muse` on your PATH (optional)
