@@ -1,6 +1,6 @@
 desc "Run the fast unit tests (no models or network)"
 task :test do
-  Dir["test/*_test.rb"].each { |f| ruby f }
+  Dir["test/*_test.rb"].each { |f| sh "bundle exec ruby #{f}" }
 end
 
 desc "Lint + format check with standardrb"
