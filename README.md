@@ -12,6 +12,8 @@ Tools like ComfyUI and Draw Things are wonderful if you want every knob — but 
 
 Everything runs on small, local models that fit on a regular Mac and load fast, so it stays quick and fun to noodle around. No cloud, no subscription, nothing leaves your machine. Simple setup for a simple, delightful job.
 
+And it's a *small* setup: drawing needs just **one model** (FLUX). That's the whole requirement. The extra commands — critique, regen, restyle, brainstorm — each ride on one optional model you can pull whenever you want them, or never. Start with one download, make pictures, grow from there.
+
 > **Status & scope:** an actively used personal tool, Apple Silicon only (see [What you need](#what-you-need)). Stable for everyday use; the command surface may still shift. Issues and PRs welcome — see [Contributing](#contributing).
 
 ```bash
@@ -44,19 +46,24 @@ First image is slow (it downloads the ~16GB model once, then caches it). After t
 
 Need: **Ruby 3+**, **Python 3**, **Ollama**, and a **Hugging Face token**. Commands below use [Homebrew](https://brew.sh); any installer works. Full details (and what each piece is for) live in the **[Install Guide](docs/install-guide.md)**.
 
+Only the **FLUX image model is required** — it powers `generate` (and `--edit`), the heart of the tool. The three Ollama models are **optional**: each one just unlocks an extra command. Skip them now and pull any later when you want that feature.
+
 ```bash
 # 1. Tools
 brew install ruby python3 ollama
 pip install mflux
 
-# 2. Local AI models (downloaded + cached once)
-ollama pull qwen2.5vl:7b                                                    # vision / critique
-ollama pull qwen2.5:3b                                                      # regen / restyle rewrites
-ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # brainstorm chat
-
-# 3. Hugging Face token (mflux downloads the image model with it)
+# 2. Hugging Face token (mflux downloads the FLUX image model with it)
 export HF_TOKEN="your_token_here"      # get one at huggingface.co/settings/tokens
                                        # add to ~/.zshrc to keep it
+```
+
+That's enough to run `muse generate`. Want the extra commands? Each is one optional model — pull only what you'll use:
+
+```bash
+ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
+ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
+ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: brainstorm
 ```
 
 ### Put `muse` on your PATH

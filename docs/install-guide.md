@@ -10,12 +10,16 @@ Everything this app needs, and how to get it. Commands below use **Homebrew**
 
 ## Dependencies
 
-| Dependency | Why | Notes |
-|---|---|---|
-| **Ruby 3.0+** | The `muse` CLI is written in Ruby | macOS ships 2.6, which is too old — install a newer one. No gems needed at runtime. |
-| **Python 3 + pip** | Runs `mflux` (the image generator) | macOS ships Python 3; `pip install mflux` pulls it and Apple's MLX. |
-| **Ollama** | Runs the local text + vision models | Background service; pull the models once (below). |
-| **Hugging Face token** | mflux downloads the image model on first run | Free token from huggingface.co. |
+Only the first three rows (plus the FLUX image model) are **required** to generate
+images. **Ollama is optional** — it only runs the models behind `critique`,
+`regen`/`restyle`, and `brainstorm`. Skip it until you want those commands.
+
+| Dependency | Why | Required? | Notes |
+|---|---|---|---|
+| **Ruby 3.0+** | The `muse` CLI is written in Ruby | Required | macOS ships 2.6, which is too old — install a newer one. No gems needed at runtime. |
+| **Python 3 + pip** | Runs `mflux` (the image generator) | Required | macOS ships Python 3; `pip install mflux` pulls it and Apple's MLX. |
+| **Hugging Face token** | mflux downloads the FLUX image model on first run | Required | Free token from huggingface.co. |
+| **Ollama** | Runs the local text + vision models | Optional | Background service; only needed for `critique`, `regen`/`restyle`, `brainstorm`. Pull the models once (below). |
 
 ### Install
 
@@ -27,7 +31,7 @@ brew install ruby
 brew install python
 pip install mflux
 
-# 3. Ollama
+# 3. Ollama — OPTIONAL (only for critique / regen / restyle / brainstorm)
 brew install ollama
 ```
 
@@ -48,23 +52,30 @@ export HF_TOKEN=your_token_here      # add to ~/.zshrc to persist
 
 ## AI models
 
-Pull the Ollama models once — they download and cache locally:
+### Required: the FLUX image model
+
+`generate` (and `--edit`) need this and nothing else. It is **not** an Ollama
+model — mflux downloads it from Hugging Face automatically on first
+`muse generate` (~16GB, cached after). No manual pull; just set `HF_TOKEN` above.
+
+### Optional: the Ollama models
+
+Each unlocks one extra command. **Pull only the ones you want** — they download
+and cache locally, and `muse` works fine without them (the matching command just
+won't be available until you pull its model):
 
 ```bash
-ollama pull qwen2.5vl:7b                                                    # vision / critique
-ollama pull qwen2.5:3b                                                      # regen + restyle rewrites
-ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # brainstorm chat
+ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
+ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
+ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: brainstorm
 ```
 
-The image model is **not** an Ollama model — mflux downloads it from Hugging
-Face automatically on first `muse generate` (~16GB, cached after).
-
-| Model | Role | Source | Approx size |
-|---|---|---|---|
-| `flux2-klein-4b` | Image generation (txt2img + edit) | Hugging Face via mflux (`black-forest-labs/FLUX.2-klein-4B`) | ~16GB |
-| `qwen2.5vl:7b` | Vision critique / compare | Ollama | ~6GB |
-| `qwen2.5:3b` | regen / restyle subject + style rewrites | Ollama | ~2GB |
-| `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` | brainstorm prompt chat | Ollama (Hugging Face GGUF) | ~7GB |
+| Model | Unlocks | Required? | Source | Approx size |
+|---|---|---|---|---|
+| `flux2-klein-4b` | `generate` + `--edit` | **Required** | Hugging Face via mflux (`black-forest-labs/FLUX.2-klein-4B`) | ~16GB |
+| `qwen2.5vl:7b` | `critique` / `compare` | Optional | Ollama | ~6GB |
+| `qwen2.5:3b` | `regen` / `restyle` | Optional | Ollama | ~2GB |
+| `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` | `brainstorm` | Optional | Ollama (Hugging Face GGUF) | ~7GB |
 
 Model names live in `lib/config.rb` if you want to swap any of them.
 
@@ -73,8 +84,8 @@ Model names live in `lib/config.rb` if you want to swap any of them.
 ```bash
 ruby --version              # 3.0 or newer
 mflux-generate-flux2 --help # mflux is installed and on PATH
-ollama list                 # the three pulled models appear
 echo $HF_TOKEN              # non-empty
+ollama list                 # optional — lists whichever optional models you pulled
 ```
 
 ### Put `muse` on your PATH (optional)
