@@ -14,12 +14,18 @@ For generation problems, the contents of `smoke-test/smoke_error.txt` after a `r
 
 ## Development setup
 
-Follow the **[Install Guide](docs/install-guide.md)** to get the dependencies and models. Then, from the repo root:
+Follow the **[Install Guide](docs/install-guide.md)** to get the dependencies and models. Then, from the repo root, install the development gems once:
 
 ```bash
-rake          # lint + unit tests — fast, no models or network
-rake test     # unit tests only
-rake lint     # standardrb only
+bundle install   # rake, standard, minitest (dev/test tooling)
+```
+
+Run the checks (prefix with `bundle exec` so they use the locked gem versions):
+
+```bash
+bundle exec rake          # lint + unit tests — fast, no models or network
+bundle exec rake test     # unit tests only
+bundle exec rake lint     # standardrb only
 ```
 
 The unit tests run offline (no models, no network); the HTTP/model calls are stubbed. Keep them that way — anything needing real models belongs in the smoke test.
