@@ -18,7 +18,7 @@ All commands run through the `muse` executable in the repo root:
 - [Edit](#edit) — instruction-based image editing
 - [Regen](#regen) — redraw with new subject, same style
 - [Restyle](#restyle) — redraw with new style, same subject
-- [Brainstorm](#brainstorm) — develop a prompt with AI
+- [Imagine](#imagine) — develop a prompt with AI
 - [Critique](#critique) — vision model feedback and chat
 - [Models](#models) — which models run, and how to swap them
 
@@ -272,14 +272,14 @@ muse restyle output/rabbit.png --style delicate --steps 16
 
 ---
 
-## Brainstorm
+## Imagine
 
 Develop a rough idea into a strong Flux prompt through a short chat loop.
 
 ### Usage
 
 ```bash
-muse brainstorm "a cat pirate"
+muse imagine "a cat pirate"
 # answer each question; type `done` anytime to finalize early
 ```
 
@@ -289,7 +289,7 @@ The model asks focused visual questions one at a time — subject, scene, action
 
 ### Model
 
-Uses the larger local text model (`BRAINSTORM_MODEL`), so the first question lags while it loads. Stopped automatically when the command exits — whether it finishes normally or errors out — so it never stays resident.
+Uses the larger local text model (`IMAGINE_MODEL`), so the first question lags while it loads. Stopped automatically when the command exits — whether it finishes normally or errors out — so it never stays resident.
 
 ---
 
@@ -353,7 +353,7 @@ Models muse uses (configured in lib/config.rb):
   OPTIONAL  (pull only what you want; each unlocks its commands)
     qwen2.5vl:7b                                                    critique
     qwen2.5:3b                                                      regen, restyle
-    hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   brainstorm
+    hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   imagine
 ```
 
 ### Swapping a model
@@ -365,7 +365,7 @@ Model names are hardcoded in `lib/config.rb`, not environment variables — edit
 | `IMAGE_MODEL` | Image generation (txt2img + edit) via mflux | `flux2-klein-4b` |
 | `VISION_MODEL` | Vision critique / compare / chat | `qwen2.5vl:7b` |
 | `REGEN_MODEL` | regen / restyle subject + style rewrites | `qwen2.5:3b` |
-| `BRAINSTORM_MODEL` | brainstorm prompt chat | `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` |
+| `IMAGINE_MODEL` | imagine prompt chat | `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` |
 
 `HF_TOKEN` is the one real environment variable the CLI needs — it's required by mflux to download the image model on first use.
 

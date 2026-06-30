@@ -178,9 +178,9 @@ ollama ps
 ollama pull qwen2.5vl:7b
 ```
 
-### Brainstorm model too slow
+### Imagine model too slow
 
-The brainstorm model is large (12B) and loads on first question. It's stopped automatically when the loop ends, so it reloads every fresh `muse brainstorm` call. To use a smaller model instead, edit `BRAINSTORM_MODEL` in `lib/config.rb`.
+The imagine model is large (12B) and loads on first question. It's stopped automatically when the loop ends, so it reloads every fresh `muse imagine` call. To use a smaller model instead, edit `IMAGINE_MODEL` in `lib/config.rb`.
 
 ### "No such file or directory" for GGUF model
 
@@ -263,7 +263,7 @@ muse regen output/good.png "new subject"
 3. Run the smoke test to isolate which component is failing:
    ```bash
    ./smoke-test/smoke           # run every step
-   ./smoke-test/smoke chat      # run just one step (also: generate edit single compare ask brainstorm)
+   ./smoke-test/smoke chat      # run just one step (also: generate edit single compare ask imagine)
    ```
 
 ### Getting help

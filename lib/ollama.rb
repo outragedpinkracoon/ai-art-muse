@@ -1,6 +1,5 @@
 require "json"
 require "net/http"
-require "base64"
 require_relative "config"
 
 module Ollama
@@ -23,7 +22,10 @@ module Ollama
   # Reads an image file and returns its base64-encoded string, ready to pass as
   # an `images` entry to a vision model.
   def self.encode_image(path)
-    Base64.strict_encode64(File.binread(path))
+    # `pack("m0")` is strict base64 (no newlines), matching the old
+    # Base64.strict_encode64 — vendored so the CLI needs no gems at runtime
+    # (base64 left Ruby's default gems in 3.4).
+    [File.binread(path)].pack("m0")
   end
 
   # POSTs `body` as JSON to `url` and returns the parsed JSON response Hash.

@@ -38,7 +38,7 @@ The unit tests run offline (no models, no network); the HTTP/model calls are stu
 muse <cmd> argv
   └─ muse (entrypoint): looks <cmd> up in COMMANDS, requires the file,
        runs Command.new(argv).run
-        ├─ Generate / Regen / Restyle / Brainstorm / Critique  (lib/commands/)
+        ├─ Generate / Regen / Restyle / Imagine / Critique  (lib/commands/)
         │     parse argv → ivars, then orchestrate the work
         ├─ mflux  (image generation / edit)  via a built shell command
         └─ Ollama (vision + text models)     via local HTTP (lib/ollama.rb)

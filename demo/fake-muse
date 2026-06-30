@@ -51,7 +51,7 @@ or a horizon would ground the character. The right whiskers also blur into
 the hat; a touch more contrast there would sharpen the silhouette.
 EOF
     ;;
-  brainstorm)
+  imagine)
     seed="$1"
     echo "Idea: $seed"
     echo "(answer each question; type \`done\` anytime to finalize)"

@@ -5,14 +5,14 @@
 `muse` is a small Ruby command-line tool that does one thing nicely: turns a prompt into a picture, then lets you play. Draw a grumpy cat pirate, swap him for a dog, paint him in chalk, add a hat — each idea is one short command away. There's even a local vision model that'll look at what you made and tell you what it thinks.
 
 <p align="center">
-  <img src="docs/images/demo.gif" width="100%" alt="A terminal session showing muse generate, regen, restyle, brainstorm, and critique">
+  <img src="docs/images/demo.gif" width="100%" alt="A terminal session showing muse generate, regen, restyle, imagine, and critique">
 </p>
 
 Tools like ComfyUI and Draw Things are wonderful if you want every knob — but that's a lot of node-wiring and sliders before your first picture, and it all lives behind a mouse. `muse` goes the other way: one command, sensible defaults, and it lives right in your terminal where you can script it, alias it, and fold it into whatever you're already doing. 
 
 Everything runs on small, local models that fit on a regular Mac and load fast, so it stays quick and fun to noodle around. No cloud, no subscription, nothing leaves your machine. Simple setup for a simple, delightful job.
 
-And it's a *small* setup: drawing needs just **one model** (FLUX). That's the whole requirement. The extra commands — critique, regen, restyle, brainstorm — each ride on one optional model you can pull whenever you want them, or never. Start with one download, make pictures, grow from there.
+And it's a *small* setup: drawing needs just **one model** (FLUX). That's the whole requirement. The extra commands — critique, regen, restyle, imagine — each ride on one optional model you can pull whenever you want them, or never. Start with one download, make pictures, grow from there.
 
 > **Status & scope:** an actively used personal tool, Apple Silicon only (see [What you need](#what-you-need)). Stable for everyday use; the command surface may still shift. Issues and PRs welcome — see [Contributing](#contributing).
 
@@ -63,7 +63,7 @@ That's enough to run `muse generate`. Want the extra commands? Each is one optio
 ```bash
 ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
 ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
-ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: brainstorm
+ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: imagine
 ```
 
 Run `muse models` anytime to see which models are configured, which are required, and what each one unlocks.
@@ -106,8 +106,8 @@ muse generate "wearing a hat" --edit output/rabbit.png
 # Get an AI critique of any image
 muse critique output/output_001.png
 
-# Stuck on a prompt? Brainstorm one through a short chat
-muse brainstorm "a cat pirate"
+# Stuck on a prompt? Imagine one through a short chat
+muse imagine "a cat pirate"
 ```
 
 Run `muse` with no arguments to list every command, or `muse generate` (etc.) to see a command's options.

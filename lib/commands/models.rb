@@ -11,7 +11,7 @@ class Models
   OPTIONAL = [
     [Config::VISION_MODEL, ["critique"]],
     [Config::REGEN_MODEL, ["regen", "restyle"]],
-    [Config::BRAINSTORM_MODEL, ["brainstorm"]]
+    [Config::IMAGINE_MODEL, ["imagine"]]
   ]
 
   def initialize(argv)

@@ -10,8 +10,8 @@ Output docs/images/demo.gif
 
 Set Shell zsh
 Set FontSize 15
-Set Width 900
-Set Height 640
+Set Width 600
+Set Height 300
 Set Padding 18
 Set Theme "Catppuccin Mocha"
 Set TypingSpeed 55ms
@@ -50,8 +50,8 @@ Sleep 3.6s
 Type "clear" Enter
 Sleep 400ms
 
-# 4. Brainstorm — chat to develop a prompt
-Type `muse brainstorm "a cat pirate"`
+# 4. Imagine — chat to develop a prompt
+Type `muse imagine "a cat pirate"`
 Sleep 600ms
 Enter
 Sleep 8.5s

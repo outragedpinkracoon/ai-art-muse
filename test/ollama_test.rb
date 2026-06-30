@@ -9,7 +9,7 @@ class OllamaEncodeImageTest < Minitest::Test
       path = File.join(dir, "img.bin")
       File.binwrite(path, "\x00\x01\x02hello")
       encoded = Ollama.encode_image(path)
-      assert_equal "\x00\x01\x02hello".b, Base64.strict_decode64(encoded)
+      assert_equal "\x00\x01\x02hello".b, encoded.unpack1("m0")
     end
   end
 end

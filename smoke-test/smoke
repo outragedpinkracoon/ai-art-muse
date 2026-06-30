@@ -13,7 +13,7 @@
 #     freshly generated image — so any step runs standalone, no ordering.
 #   - every generated image goes to smoke-test/output/ (via MUSE_OUTPUT_DIR), not
 #     the real output/ gallery; that dir is emptied on a clean pass. The text-only
-#     steps (critique/ask/compare/chat/brainstorm) save their answer there too, as
+#     steps (critique/ask/compare/chat/imagine) save their answer there too, as
 #     <step>.txt, so you can read what the model said. --no-tidy keeps it all.
 #
 # Each step's full output (including errors) is appended to
@@ -24,7 +24,7 @@
 # Usage (run from anywhere; the script cd's to the repo root itself):
 #   ./smoke-test/smoke         run every step
 #   ./smoke-test/smoke chat    run only the `chat` step (also: generate edit
-#                              single compare ask brainstorm)
+#                              single compare ask imagine)
 set -euo pipefail
 # Run from the repo root (this script lives in smoke-test/) so ./muse, output/,
 # and smoke-test/smoke_error.txt resolve where the rest of the tooling expects.
@@ -59,7 +59,7 @@ for arg in "$@"; do
   esac
 done
 
-STEPS="generate edit regen restyle single compare ask chat brainstorm"
+STEPS="generate edit regen restyle single compare ask chat imagine"
 
 if [ "$ONLY" = "-h" ] || [ "$ONLY" = "--help" ]; then
   cat <<EOF
@@ -81,7 +81,7 @@ Steps:
   compare     critique two images
   ask         critique --ask "question"
   chat        critique --chat (enters the loop, exits with \`done\`)
-  brainstorm  brainstorm (finalize early with \`done\`)
+  imagine  imagine (finalize early with \`done\`)
 
 All steps run on committed fixtures (smoke-test/fixtures/) — plain images for the
 vision steps, a real mflux PNG (seed.png) for edit/regen/restyle — so any single step
@@ -115,7 +115,7 @@ fail() { printf '  ✗ %s — see %s\n' "$1" "$LOG" >&2; exit 1; }
 log_run() { "$@" >> "$LOG" 2>&1; }
 
 # Like log_run, but for steps whose whole point is the text they print (critique,
-# ask, compare, chat, brainstorm — they make no image). The model's answer is
+# ask, compare, chat, imagine — they make no image). The model's answer is
 # saved to smoke-test/output/<name>.txt so you can actually read it afterward,
 # while errors still go to the shared log. First arg is the output basename; the
 # rest is the command. The saved file lives in MUSE_OUTPUT_DIR, so it follows the
@@ -206,12 +206,12 @@ if want chat; then
   ok "chat returned -> $MUSE_OUTPUT_DIR/chat.txt"
 fi
 
-# --- text: brainstorm (finish immediately with `done`) ------------------------
+# --- text: imagine (finish immediately with `done`) ------------------------
 # Run last and alone — gemma is large; nothing else is loaded by now.
-if want brainstorm; then
-  step "muse brainstorm (finalize early)"
-  printf 'done\n' | say_run brainstorm ./muse brainstorm "a cat pirate" || fail "brainstorm exited nonzero"
-  ok "brainstorm returned a prompt -> $MUSE_OUTPUT_DIR/brainstorm.txt"
+if want imagine; then
+  step "muse imagine (finalize early)"
+  printf 'done\n' | say_run imagine ./muse imagine "a cat pirate" || fail "imagine exited nonzero"
+  ok "imagine returned a prompt -> $MUSE_OUTPUT_DIR/imagine.txt"
 fi
 
 : > "$LOG"   # clean pass — nothing to keep

@@ -22,7 +22,7 @@ class ModelsTest < Minitest::Test
 
   def test_lists_every_model_from_config
     text = output
-    [Config::IMAGE_MODEL, Config::VISION_MODEL, Config::REGEN_MODEL, Config::BRAINSTORM_MODEL].each do |model|
+    [Config::IMAGE_MODEL, Config::VISION_MODEL, Config::REGEN_MODEL, Config::IMAGINE_MODEL].each do |model|
       assert_includes text, model
     end
   end
@@ -33,7 +33,7 @@ class ModelsTest < Minitest::Test
     # constants, so there's no point rebuilding the regexp on every call.
     assert_match(/#{Regexp.escape(Config::IMAGE_MODEL)}\s+generate, edit/o, text)
     assert_match(/#{Regexp.escape(Config::REGEN_MODEL)}\s+regen, restyle/o, text)
-    assert_match(/#{Regexp.escape(Config::BRAINSTORM_MODEL)}\s+brainstorm/o, text)
+    assert_match(/#{Regexp.escape(Config::IMAGINE_MODEL)}\s+imagine/o, text)
   end
 
   def test_only_the_image_model_sits_under_required

@@ -12,14 +12,14 @@ Everything this app needs, and how to get it. Commands below use **Homebrew**
 
 Only the first three rows (plus the FLUX image model) are **required** to generate
 images. **Ollama is optional** — it only runs the models behind `critique`,
-`regen`/`restyle`, and `brainstorm`. Skip it until you want those commands.
+`regen`/`restyle`, and `imagine`. Skip it until you want those commands.
 
 | Dependency | Why | Required? | Notes |
 |---|---|---|---|
 | **Ruby 3.0+** | The `muse` CLI is written in Ruby | Required | macOS ships 2.6, which is too old — install a newer one. No gems needed at runtime. |
 | **Python 3 + pip** | Runs `mflux` (the image generator) | Required | macOS ships Python 3; `pip install mflux` pulls it and Apple's MLX. |
 | **Hugging Face token** | mflux downloads the FLUX image model on first run | Required | Free token from huggingface.co. |
-| **Ollama** | Runs the local text + vision models | Optional | Background service; only needed for `critique`, `regen`/`restyle`, `brainstorm`. Pull the models once (below). |
+| **Ollama** | Runs the local text + vision models | Optional | Background service; only needed for `critique`, `regen`/`restyle`, `imagine`. Pull the models once (below). |
 
 ### Install
 
@@ -31,7 +31,7 @@ brew install ruby
 brew install python
 pip install mflux
 
-# 3. Ollama — OPTIONAL (only for critique / regen / restyle / brainstorm)
+# 3. Ollama — OPTIONAL (only for critique / regen / restyle / imagine)
 brew install ollama
 ```
 
@@ -67,7 +67,7 @@ won't be available until you pull its model):
 ```bash
 ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
 ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
-ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: brainstorm
+ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: imagine
 ```
 
 | Model | Unlocks | Required? | Source | Approx size |
@@ -75,7 +75,7 @@ ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # un
 | `flux2-klein-4b` | `generate` + `--edit` | **Required** | Hugging Face via mflux (`black-forest-labs/FLUX.2-klein-4B`) | ~16GB |
 | `qwen2.5vl:7b` | `critique` / `compare` | Optional | Ollama | ~6GB |
 | `qwen2.5:3b` | `regen` / `restyle` | Optional | Ollama | ~2GB |
-| `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` | `brainstorm` | Optional | Ollama (Hugging Face GGUF) | ~7GB |
+| `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` | `imagine` | Optional | Ollama (Hugging Face GGUF) | ~7GB |
 
 Model names live in `lib/config.rb` if you want to swap any of them.
 
@@ -127,4 +127,4 @@ Models:
 - `flux2-klein-4b` (image) — https://huggingface.co/black-forest-labs/FLUX.2-klein-4B
 - `qwen2.5vl:7b` (vision) — https://ollama.com/library/qwen2.5vl
 - `qwen2.5:3b` (regen/restyle) — https://ollama.com/library/qwen2.5
-- gemma brainstorm GGUF — https://huggingface.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF
+- gemma imagine GGUF — https://huggingface.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF

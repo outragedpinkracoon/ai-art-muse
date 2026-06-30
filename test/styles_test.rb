@@ -53,7 +53,9 @@ class StylesLookupTest < Minitest::Test
   end
 
   def test_unknown_layer_aborts
-    assert_raises(SystemExit) { Styles.lookup("badlayer") }
+    capture_io do
+      assert_raises(SystemExit) { Styles.lookup("badlayer") }
+    end
   end
 
   def test_whitespace_around_layer_names_tolerated
