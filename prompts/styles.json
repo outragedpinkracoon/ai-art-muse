@@ -1,0 +1,26 @@
+{
+  "illustration": {
+    "positive": "Loose hand-drawn illustration, rough scratchy black ink outlines with uneven pressure, wobbly imperfect linework, grainy stippled texture across all fills, flat solid color blocks with no gradients, simple minimal white highlight marks for edge definition, soft rounded organic shapes, casual expressive doodle charm, rough 2D comic art style, simple and minimal detail.",
+    "negative": "Photorealistic, 3D render, smooth gradients, soft shading, glossy surfaces, airbrushing, metallic reflections, depth of field, cinematic lighting, hyper-detailed realism, clean polished vector finish, uniform line thickness, clip art, sticker style."
+  },
+  "sketch": {
+    "positive": "Loose hand-drawn felt-tip marker art, rough scratchy black outlines with inconsistent pressure, sketchy overlapping hatching lines, lines frequently broken and imperfect, grainy noise and stippled texture throughout all color fills, completely flat solid block colors with no gradients, vibrant cheerful hues, matte finish, rough expressive cartoon style, intentionally uneven proportions, simple minimal white highlight marks on edges, single flat drop shadow on the floor to ground it, strong contrast, casual messy doodle aesthetic, highly textured 2D comic drawing.",
+    "negative": "Photorealistic, 3D render, soft shadows, volumetric lighting, gradients, watercolor, messy smudges, intricate textures, realistic anatomy, cluttered background, cinematic, depth of field, shiny surfaces, pastel colors, muted tones, complex details, noisy background, smooth vector lines, symmetrical shapes, perfect digital edges, clean polished finish, clip art, sticker style, geometric perfection, uniform line thickness."
+  },
+ "chalk": {
+    "positive": "Strictly black and white grayscale illustration only, solid dark charcoal background, bold expressive white brushstrokes, dry brush texture, stippled texture, rough scratchy gestural linework, vertical striations, pure high contrast black and white values, gritty hand drawn chalk and ink aesthetic, minimal shading built through heavy texture and negative space, dynamic rough sketch quality, bold graphic noir art style.",
+    "negative": "Color, any color, gray shading, grey midtones, grayscale fade, splashes of color, photorealistic, 3D render, smooth gradients, soft edges, airbrushing, blurry, shiny, clean, polished digital painting, detailed intricate realism, soft lighting, depth of field, pastel, muted tones, colored ink."
+  },
+  "delicate": {
+    "positive": "Hand-drawn sketch illustration style, thin delicate black ink linework, loose scratchy gestural outlines, watercolor-style color washes, soft flat color blocks with slight textural opacity, stippled grainy texture over entire image, muted earthy color palette, gentle faded hues, nostalgic storybook illustration aesthetic, simple uncluttered composition, minimal shading, clean white background, casual doodle quality, charming and expressive.",
+    "negative": "Photorealistic, 3D render, smooth gradients, glossy surfaces, airbrushing, vibrant neon colors, harsh shadows, realistic textures, detailed intricate rendering, blurred background, depth of field, cinematic lighting, polished digital painting, soft blurry edges, metallic reflections, heavy shading."
+  },
+  "character": {
+    "positive": "Goofy deadpan expression, wide expressive eyes, simple bold facial features, soft round organic silhouette, unbothered laid-back body language, relaxed slouchy posture, exaggerated cartoonish proportions, doughy soft shapes, simplified anatomy, stubby rounded limbs, comedic absurdist charm, flat expressive personality, minimal detailed features, visually simple but highly emotive design",
+    "negative": "Realistic anatomy, sharp angles, muscular build, slender thin body, rigid posture, intense serious expression, angry scowl, detailed facial features, delicate features, intricate clothing details, complex wrinkles, expressive dynamic pose, athletic physique, fierce look, menacing vibe, intense dramatic lighting, sharp geometric shapes, tall and lanky proportions, stern attitude, detailed hands and feet, hyper-realistic eyes"
+  },
+  "object": {
+    "positive": "Flat hand-drawn illustration style, bold scratchy black ink outlines, boxy blocky geometric shapes, simplified low-poly aesthetic, stippled grainy texture across all surfaces, completely flat solid color fills, no smooth gradients or soft shading, minimal bold white highlight lines for edge definition, solid flat monochromatic background, slightly wobbly and organic linework, casual loose sketchy quality, retro doodle aesthetic, rough 2D comic art style, simple and minimal detail.",
+    "negative": "Photorealistic, 3D render, smooth gradients, soft shading, metallic reflections, glossy surfaces, airbrushing, intricate realistic details, complex mechanical parts, perspective depth, depth of field, shiny paint, pastel colors, muted tones, blurred edges, hyper-detailed, realistic textures, soft shadows, atmospheric lighting."
+  }
+}

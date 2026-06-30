@@ -1,0 +1,8 @@
+[] Add img2img flow with my style and a base image
+[] What other flux features are there?
+
+# Unwired mflux-generate-flux2-edit flags worth exposing
+[] multi-image: --image-paths takes a list, app passes one
+
+# Look at model
+qwen3-vl:8b -> use a smaller context and redownload to retry?

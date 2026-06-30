@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+# muse — one entry point for the AI-image tooling.
+#   muse generate "a cat pirate" [opts]   txt2img / edit via mflux
+#   muse regen img.png "new subject"      redraw the seed+style with a new subject
+#   muse restyle img.png --style chalk    redraw the subject+seed in a new style
+#   muse brainstorm "rough idea"          chat loop to develop a Flux prompt
+#   muse critique image.png [opts]        vision-model critique / compare / chat
+#
+# Each subcommand is a command object in its own file; this requires the right
+# one and runs it with the remaining argv.
+
+COMMANDS = {
+  "generate" => ["lib/commands/generate", "Generate"],
+  "regen" => ["lib/commands/regen", "Regen"],
+  "restyle" => ["lib/commands/restyle", "Restyle"],
+  "brainstorm" => ["lib/commands/brainstorm", "Brainstorm"],
+  "critique" => ["lib/commands/critique", "Critique"]
+}
+
+def usage
+  warn <<~USAGE
+    Usage: muse <command> [args]
+
+    Commands:
+      generate     generate or edit an image (mflux)
+      regen        redraw a good image's seed+style with a new subject
+      restyle      redraw an image's subject+seed in a different style
+      brainstorm   chat to develop a Flux prompt from a rough idea
+      critique     critique / compare / chat about an image (vision model)
+
+    Run `muse <command>` with no args for that command's own usage.
+  USAGE
+  exit 1
+end
+
+cmd = ARGV.shift
+usage unless cmd && (entry = COMMANDS[cmd])
+
+file, klass = entry
+require_relative file
+Object.const_get(klass).new(ARGV).run

@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# fake-muse — a *demo-only* stand-in for the real `muse` CLI.
+#
+# The real tool runs a 16GB local image model and takes tens of seconds per
+# image, which makes for a slow, unrepeatable screen recording. This stub
+# prints the same output the real commands print, with small sleeps so the
+# recording reads like a live session. It shows no images — the demo is a
+# text-only tour of the command flow.
+#
+# It is NOT a working tool — it only knows the exact demo arguments scripted in
+# demo.tape. Re-record with: vhs demo/demo.tape  (see demo/README.md).
+set -euo pipefail
+
+type_pause() { sleep "${1:-0.4}"; }
+
+cmd="${1:-}"; shift || true
+
+case "$cmd" in
+  generate)
+    prompt="$1"
+    echo "Generating: $prompt, children's book illustration, soft gouache, warm palette"
+    type_pause 0.6
+    echo "  mflux · FLUX.2 Klein 4B · 4 steps · seed 42"
+    type_pause 1.1
+    echo "Saved: output/output_001.png"
+    ;;
+  regen)
+    echo "Reusing seed 42 + illustration style from output/output_001.png"
+    type_pause 0.5
+    echo "Generating: a wise cat wizard casting a spell, children's book illustration, soft gouache, warm palette"
+    type_pause 1.1
+    echo "Saved: output/output_002.png"
+    ;;
+  restyle)
+    echo "Reusing subject + seed from output/rabbit.png, new style: chalk"
+    type_pause 0.5
+    echo "Generating: a curious rabbit, chalk drawing on black paper, soft pastel smudges"
+    type_pause 1.1
+    echo "Saved: output/output_003.png"
+    ;;
+  critique)
+    echo "Critiquing... (qwen2.5vl:7b)"
+    type_pause 1.0
+    cat <<'EOF'
+A charming, characterful piece. The eyepatch and tricorn hat read instantly
+as "pirate," and the grumpy brow gives the cat real personality. The warm
+gouache palette and soft edges suit a children's-book feel.
+
+To push it further: the background is a flat wash — a hint of ship's rigging
+or a horizon would ground the character. The right whiskers also blur into
+the hat; a touch more contrast there would sharpen the silhouette.
+EOF
+    ;;
+  brainstorm)
+    seed="$1"
+    echo "Idea: $seed"
+    echo "(answer each question; type \`done\` anytime to finalize)"
+    echo
+    type_pause 0.9
+    echo "What mood — playful and cartoonish, or moody and cinematic?"
+    type_pause 1.4
+    # The artist's answer, scripted so the recording is one self-contained run.
+    echo "> playful, and give him a tiny ship"
+    type_pause 1.4
+    echo
+    echo "Nice. What's the setting — open sea, a busy harbor, or a cozy cabin?"
+    type_pause 1.4
+    echo "> open sea at golden hour"
+    type_pause 1.2
+    echo
+    echo "Final prompt:"
+    echo "  a jaunty cat pirate at the helm of a tiny ship on the open sea at"
+    echo "  golden hour, playful children's book illustration, soft gouache,"
+    echo "  warm palette, gentle sea breeze"
+    ;;
+  *)
+    echo "fake-muse: demo stub — unknown command '$cmd'" >&2
+    exit 1
+    ;;
+esac

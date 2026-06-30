@@ -1,0 +1,233 @@
+#!/usr/bin/env bash
+# smoke — real end-to-end run of every muse subcommand.
+#
+# Unlike test/ (fast unit tests, no models/network), this exercises the actual
+# pipeline: mflux generates real images, ollama runs the vision/text models.
+# Slow (~2-3 min) and needs mflux + ollama + the models pulled.
+#
+# Rules baked in:
+#   - 2 steps everywhere (mflux divides by steps-1, so 1 is invalid; 2 is min).
+#   - models run strictly one at a time; each is stopped before the next so
+#     gemma never shares memory with flux.
+#   - vision/text steps run on committed fixtures (smoke_fixtures/), NOT on a
+#     freshly generated image — so any step runs standalone, no ordering.
+#   - every generated image goes to smoke-test/output/ (via MUSE_OUTPUT_DIR), not
+#     the real output/ gallery; that dir is emptied on a clean pass. The text-only
+#     steps (critique/ask/compare/chat/brainstorm) save their answer there too, as
+#     <step>.txt, so you can read what the model said. --no-tidy keeps it all.
+#
+# Each step's full output (including errors) is appended to
+# smoke-test/smoke_error.txt, overwritten fresh at the start of every run. On
+# failure the log is left in place so you can read what broke; on a clean pass
+# it's emptied.
+#
+# Usage (run from anywhere; the script cd's to the repo root itself):
+#   ./smoke-test/smoke         run every step
+#   ./smoke-test/smoke chat    run only the `chat` step (also: generate edit
+#                              single compare ask brainstorm)
+set -euo pipefail
+# Run from the repo root (this script lives in smoke-test/) so ./muse, output/,
+# and smoke-test/smoke_error.txt resolve where the rest of the tooling expects.
+cd "$(dirname "$0")/.."
+
+VISION_MODEL="qwen2.5vl:7b"
+BRAINSTORM_MODEL="hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M"
+REGEN_MODEL="qwen2.5:3b"
+
+# Fixed inputs for the vision steps — committed, so they don't depend on a
+# generate run landing first.
+FIX_A="smoke-test/fixtures/a.png"
+FIX_B="smoke-test/fixtures/b.png"
+# A real mflux PNG (carries seed + prompt in EXIF) for regen/restyle, which read
+# that metadata. The vision fixtures above are plain images with none.
+FIX_SEED="smoke-test/fixtures/seed.png"
+
+# Generated images go here, not the real output/ gallery, so a smoke run never
+# mixes throwaway images into your actual work. Emptied on a clean pass below.
+export MUSE_OUTPUT_DIR="smoke-test/output"
+
+# Parse args: an optional step name plus --no-tidy (in any order). --no-tidy keeps
+# the generated images in smoke-test/output/ instead of emptying it on a clean
+# pass — handy when you want to eyeball what the run actually produced.
+ONLY=""        # empty = run all; otherwise the single step name to run
+TIDY=1         # 1 = empty smoke-test/output/ on a clean pass; 0 = keep the images
+for arg in "$@"; do
+  case "$arg" in
+    --no-tidy) TIDY=0 ;;
+    -h|--help) ONLY="$arg" ;;
+    *)         ONLY="$arg" ;;
+  esac
+done
+
+STEPS="generate edit regen restyle single compare ask chat brainstorm"
+
+if [ "$ONLY" = "-h" ] || [ "$ONLY" = "--help" ]; then
+  cat <<EOF
+Usage: ./smoke-test/smoke [STEP] [--no-tidy]
+
+Real end-to-end run of muse against mflux + ollama (slow; needs the models).
+With no STEP, runs every step in order. With a STEP, runs only that one.
+
+Options:
+  --no-tidy   keep smoke-test/output/ (generated images + the text steps'
+              <step>.txt answers) instead of emptying it on a clean pass.
+
+Steps:
+  generate    txt2img (mflux)
+  edit        --edit the seed PNG fixture (mflux)
+  regen       redraw the seed PNG fixture's seed+style with a new subject (mflux+ollama)
+  restyle     redraw the seed PNG fixture's subject+seed in a different style (mflux+ollama)
+  single      critique one image
+  compare     critique two images
+  ask         critique --ask "question"
+  chat        critique --chat (enters the loop, exits with \`done\`)
+  brainstorm  brainstorm (finalize early with \`done\`)
+
+All steps run on committed fixtures (smoke-test/fixtures/) — plain images for the
+vision steps, a real mflux PNG (seed.png) for edit/regen/restyle — so any single step
+runs standalone. Generated images go to smoke-test/output/ (emptied on a clean
+pass unless --no-tidy); step output is logged to smoke-test/smoke_error.txt.
+EOF
+  exit 0
+fi
+
+if [ -n "$ONLY" ] && [[ " $STEPS " != *" $ONLY "* ]]; then
+  printf 'unknown step: %s\nknown steps: %s\n' "$ONLY" "$STEPS" >&2
+  exit 2
+fi
+
+LOG="smoke-test/smoke_error.txt"
+: > "$LOG"   # truncate fresh each run
+
+# Start from an empty output dir so a prior --no-tidy run (or a crash) doesn't
+# leave stale images/answers around to confuse this run's results.
+rm -rf "$MUSE_OUTPUT_DIR"
+
+# True when this step should run (no filter given, or the filter names it).
+want() { [ -z "$ONLY" ] || [ "$ONLY" = "$1" ]; }
+
+step() { printf '\n=== %s ===\n' "$1"; printf '\n=== %s ===\n' "$1" >> "$LOG"; }
+ok()   { printf '  ✓ %s\n' "$1"; }
+fail() { printf '  ✗ %s — see %s\n' "$1" "$LOG" >&2; exit 1; }
+
+# Run a muse subcommand, appending all its output to the log. Returns its exit
+# status so the caller can fail with context.
+log_run() { "$@" >> "$LOG" 2>&1; }
+
+# Like log_run, but for steps whose whole point is the text they print (critique,
+# ask, compare, chat, brainstorm — they make no image). The model's answer is
+# saved to smoke-test/output/<name>.txt so you can actually read it afterward,
+# while errors still go to the shared log. First arg is the output basename; the
+# rest is the command. The saved file lives in MUSE_OUTPUT_DIR, so it follows the
+# same tidy/--no-tidy rule as generated images.
+say_run() {
+  local name="$1"; shift
+  mkdir -p "$MUSE_OUTPUT_DIR"
+  local out="$MUSE_OUTPUT_DIR/$name.txt"
+  "$@" 2>> "$LOG" | tee "$out" >> "$LOG"
+}
+
+# generate prints "Saved: <path>"; pull it back out of the log tail.
+last_saved() { sed -n 's/^Saved: //p' "$LOG" | tail -1; }
+
+# --- mflux: txt2img -----------------------------------------------------------
+if want generate; then
+  step "muse generate (txt2img, 2 steps)"
+  log_run ./muse generate "a grumpy raccoon" --steps 2 || fail "generate txt2img exited nonzero"
+  IMG=$(last_saved)
+  [ -n "$IMG" ] && [ -s "$IMG" ] || fail "no image produced by txt2img"
+  ok "wrote $IMG"
+fi
+
+# --- mflux: edit --------------------------------------------------------------
+# Edits the seed PNG fixture so it runs standalone (no dependency on the generate
+# step). Uses the same committed fixture as regen/restyle — edit only needs pixels.
+if want edit; then
+  step "muse generate --edit (2 steps)"
+  log_run ./muse generate "make the background blue" --edit "$FIX_SEED" --steps 2 || fail "generate --edit exited nonzero"
+  IMG=$(last_saved)
+  [ -n "$IMG" ] && [ -s "$IMG" ] || fail "no image produced by edit"
+  ok "wrote $IMG"
+fi
+
+# --- mflux + ollama: regen ----------------------------------------------------
+# Runs on the committed mflux PNG fixture (regen reads its EXIF seed + prompt).
+# seed.png is a rabbit; we ask for a fox so the subject visibly swaps while the
+# watercolor style + composition carry over — that's exactly what regen is for,
+# and the swap is obvious to eyeball (fox, not rabbit, same look).
+if want regen; then
+  step "muse regen (seed+style, swap subject -> fox)"
+  log_run ./muse regen "$FIX_SEED" "a grumpy fox" --steps 2 || fail "regen exited nonzero"
+  IMG=$(last_saved)
+  [ -n "$IMG" ] && [ "$IMG" != "$FIX_SEED" ] && [ -s "$IMG" ] || fail "no image produced by regen"
+  ok "regenerated $FIX_SEED -> $IMG"
+  ollama stop "$REGEN_MODEL" >/dev/null 2>&1 || true
+fi
+
+# --- mflux + ollama: restyle --------------------------------------------------
+# Runs on the same mflux PNG fixture; re-renders its subject in a different
+# style. Exercises the qwen style-strip + the txt2img handoff with --style.
+if want restyle; then
+  step "muse restyle (subject+seed, new style)"
+  log_run ./muse restyle "$FIX_SEED" --style chalk --steps 2 || fail "restyle exited nonzero"
+  IMG=$(last_saved)
+  [ -n "$IMG" ] && [ "$IMG" != "$FIX_SEED" ] && [ -s "$IMG" ] || fail "no image produced by restyle"
+  ok "restyled $FIX_SEED -> $IMG"
+  ollama stop "$REGEN_MODEL" >/dev/null 2>&1 || true
+fi
+
+# flux is done; nothing to stop (mflux is not a resident model).
+
+# --- vision: critique (single) ------------------------------------------------
+if want single; then
+  step "muse critique (single image)"
+  say_run single ./muse critique "$FIX_A" || fail "critique single exited nonzero"
+  ok "critique returned -> $MUSE_OUTPUT_DIR/single.txt"
+fi
+
+# --- vision: compare (two images) ---------------------------------------------
+if want compare; then
+  step "muse critique (compare two)"
+  say_run compare ./muse critique "$FIX_A" "$FIX_B" || fail "critique compare exited nonzero"
+  ok "compare returned -> $MUSE_OUTPUT_DIR/compare.txt"
+fi
+
+# --- vision: ask --------------------------------------------------------------
+# Asks about the colouring (b.png) so the answer is concrete and checkable
+# against what's actually in the image.
+if want ask; then
+  step "muse critique --ask"
+  say_run ask ./muse critique "$FIX_B" --ask "how can I improve the colouring on this?" || fail "critique --ask exited nonzero"
+  ok "ask returned -> $MUSE_OUTPUT_DIR/ask.txt"
+fi
+
+# --- vision: chat (enter the loop, exit immediately with `done`) --------------
+if want chat; then
+  step "muse critique --chat"
+  printf 'done\n' | say_run chat ./muse critique "$FIX_A" --chat || fail "critique --chat exited nonzero"
+  ok "chat returned -> $MUSE_OUTPUT_DIR/chat.txt"
+fi
+
+# Stop the vision model if any vision step ran.
+if want single || want compare || want ask || want chat; then
+  ollama stop "$VISION_MODEL" >/dev/null 2>&1 || true
+fi
+
+# --- text: brainstorm (finish immediately with `done`) ------------------------
+# Run last and alone — gemma is large; nothing else is loaded by now.
+if want brainstorm; then
+  step "muse brainstorm (finalize early)"
+  printf 'done\n' | say_run brainstorm ./muse brainstorm "a cat pirate" || fail "brainstorm exited nonzero"
+  ok "brainstorm returned a prompt -> $MUSE_OUTPUT_DIR/brainstorm.txt"
+  ollama stop "$BRAINSTORM_MODEL" >/dev/null 2>&1 || true
+fi
+
+: > "$LOG"   # clean pass — nothing to keep
+# Throw away the images this run generated, unless --no-tidy. The real output/
+# gallery is untouched either way because everything went to MUSE_OUTPUT_DIR.
+if [ "$TIDY" = 1 ]; then
+  rm -rf "$MUSE_OUTPUT_DIR"
+else
+  printf 'kept generated images in %s/\n' "$MUSE_OUTPUT_DIR"
+fi
+printf '\nDone%s\n' "${ONLY:+ ($ONLY)}"
