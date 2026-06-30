@@ -13,7 +13,7 @@ desc "Real end-to-end run of muse. Usage: rake smoke[chat,--no-tidy] or rake smo
 task :smoke, [:step] do |_t, args|
   all_args = [args[:step], *args.extras].compact
   step, flags = all_args.partition { |a| !a.start_with?("-") }
-  sh (["./smoke-test/smoke", *step, *flags].join(" ")).strip
+  sh ["./smoke-test/smoke", *step, *flags].join(" ").strip
 end
 
 desc "Lint then test (default)"
