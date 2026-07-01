@@ -63,7 +63,7 @@ That's enough to run `muse generate`. Want the extra commands? Each is one optio
 ```bash
 ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
 ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
-ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: imagine
+ollama pull gemma4:12b-mlx                                                  # unlocks: imagine
 ```
 
 Run `muse models` anytime to see which models are configured, which are required, and what each one unlocks.

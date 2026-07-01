@@ -353,7 +353,7 @@ Models muse uses (configured in lib/config.rb):
   OPTIONAL  (pull only what you want; each unlocks its commands)
     qwen2.5vl:7b                                                    critique
     qwen2.5:3b                                                      regen, restyle
-    hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   imagine
+    gemma4:12b-mlx                                                  imagine
 ```
 
 ### Swapping a model
@@ -365,7 +365,7 @@ Model names are hardcoded in `lib/config.rb`, not environment variables — edit
 | `IMAGE_MODEL` | Image generation (txt2img + edit) via mflux | `flux2-klein-4b` |
 | `VISION_MODEL` | Vision critique / compare / chat | `qwen2.5vl:7b` |
 | `REGEN_MODEL` | regen / restyle subject + style rewrites | `qwen2.5:3b` |
-| `IMAGINE_MODEL` | imagine prompt chat | `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` |
+| `IMAGINE_MODEL` | imagine prompt chat | `gemma4:12b-mlx` |
 
 `HF_TOKEN` is the one real environment variable the CLI needs — it's required by mflux to download the image model on first use.
 

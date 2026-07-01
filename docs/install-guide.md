@@ -67,7 +67,7 @@ won't be available until you pull its model):
 ```bash
 ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
 ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
-ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # unlocks: imagine
+ollama pull gemma4:12b-mlx                                                  # unlocks: imagine
 ```
 
 | Model | Unlocks | Required? | Source | Approx size |
@@ -75,7 +75,7 @@ ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M   # un
 | `flux2-klein-4b` | `generate` + `--edit` | **Required** | Hugging Face via mflux (`black-forest-labs/FLUX.2-klein-4B`) | ~16GB |
 | `qwen2.5vl:7b` | `critique` / `compare` | Optional | Ollama | ~6GB |
 | `qwen2.5:3b` | `regen` / `restyle` | Optional | Ollama | ~2GB |
-| `hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M` | `imagine` | Optional | Ollama (Hugging Face GGUF) | ~7GB |
+| `gemma4:12b-mlx` | `imagine` | Optional | Ollama | ~8GB |
 
 Model names live in `lib/config.rb` if you want to swap any of them.
 
@@ -127,4 +127,4 @@ Models:
 - `flux2-klein-4b` (image) — https://huggingface.co/black-forest-labs/FLUX.2-klein-4B
 - `qwen2.5vl:7b` (vision) — https://ollama.com/library/qwen2.5vl
 - `qwen2.5:3b` (regen/restyle) — https://ollama.com/library/qwen2.5
-- gemma imagine GGUF — https://huggingface.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF
+- `gemma4:12b-mlx` (imagine) — https://ollama.com/library/gemma4

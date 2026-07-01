@@ -182,11 +182,11 @@ ollama pull qwen2.5vl:7b
 
 The imagine model is large (12B) and loads on first question. It's stopped automatically when the loop ends, so it reloads every fresh `muse imagine` call. To use a smaller model instead, edit `IMAGINE_MODEL` in `lib/config.rb`.
 
-### "No such file or directory" for GGUF model
+### "No such file or directory" for the imagine model
 
 ```bash
-# Pull the exact model URI
-ollama pull hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M
+# Pull the model
+ollama pull gemma4:12b-mlx
 ```
 
 ---

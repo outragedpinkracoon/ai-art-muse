@@ -4,7 +4,7 @@
 module Config
   OLLAMA_URL = "http://localhost:11434"
   VISION_MODEL = "qwen2.5vl:7b"
-  IMAGINE_MODEL = "hf.co/yuxinlu1/gemma-4-12B-it-Claude-4.6-4.8-Opus-GGUF:Q4_K_M"
+  IMAGINE_MODEL = "gemma4:12b-mlx"
   # Small text model for the regen subject/style fuse — a constrained rewrite,
   # so a fast 3B is plenty (no need for the heavier imagine model).
   REGEN_MODEL = "qwen2.5:3b"
