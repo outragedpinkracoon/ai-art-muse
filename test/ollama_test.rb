@@ -44,6 +44,50 @@ class OllamaRequestShapingTest < Minitest::Test
     assert_equal ["b64data"], captured[:images]
   end
 
+  def test_generate_includes_options_when_given
+    captured = nil
+    Ollama.stub(:post, ->(_url, body) {
+      captured = body
+      {"response" => "ok"}
+    }) do
+      Ollama.generate("m", "p", options: {num_ctx: 32768})
+    end
+    assert_equal({num_ctx: 32768}, captured[:options])
+  end
+
+  def test_generate_omits_options_when_absent
+    captured = nil
+    Ollama.stub(:post, ->(_url, body) {
+      captured = body
+      {"response" => "ok"}
+    }) do
+      Ollama.generate("m", "p")
+    end
+    refute captured.key?(:options)
+  end
+
+  def test_chat_includes_options_when_given
+    captured = nil
+    Ollama.stub(:post, ->(_url, body) {
+      captured = body
+      {"message" => {"content" => "ok"}}
+    }) do
+      Ollama.chat("m", [], options: {num_ctx: 32768})
+    end
+    assert_equal({num_ctx: 32768}, captured[:options])
+  end
+
+  def test_chat_omits_options_when_absent
+    captured = nil
+    Ollama.stub(:post, ->(_url, body) {
+      captured = body
+      {"message" => {"content" => "ok"}}
+    }) do
+      Ollama.chat("m", [])
+    end
+    refute captured.key?(:options)
+  end
+
   def test_chat_returns_stripped_message_content
     Ollama.stub(:post, ->(url, _body) {
       assert_includes url, "/api/chat"

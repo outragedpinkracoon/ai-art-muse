@@ -178,6 +178,15 @@ ollama ps
 ollama pull qwen3-vl:8b
 ```
 
+### Setting Ollama context length has no effect on critique
+
+`critique`, `compare`, and vision chat set their context window per request
+(`VISION_NUM_CTX` in `lib/config.rb`, 32k by default). This is deliberate — it
+overrides the Ollama server default so results don't depend on which server owns
+the port. As a result, a context length set in the **Ollama desktop app UI** or
+via **`OLLAMA_CONTEXT_LENGTH`** in your shell profile is ignored for vision
+calls. To change it, edit `VISION_NUM_CTX`.
+
 ### Imagine model too slow
 
 The imagine model is large (12B) and loads on first question. It's stopped automatically when the loop ends, so it reloads every fresh `muse imagine` call. To use a smaller model instead, edit `IMAGINE_MODEL` in `lib/config.rb`.

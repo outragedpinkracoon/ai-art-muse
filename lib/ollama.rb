@@ -6,16 +6,19 @@ module Ollama
   # Single-turn completion. `model` is an Ollama model name, `prompt` the text,
   # `images` an optional array of base64-encoded images for a vision model.
   # Returns the model's stripped response string (nil if absent).
-  def self.generate(model, prompt, images: nil)
+  def self.generate(model, prompt, images: nil, options: nil)
     body = {model: model, prompt: prompt, stream: false}
     body[:images] = images if images
+    body[:options] = options if options
     post("#{Config::OLLAMA_URL}/api/generate", body)["response"]&.strip
   end
 
   # Multi-turn chat. `messages` is the role/content history array. Returns the
   # assistant's stripped reply string (nil if absent).
-  def self.chat(model, messages)
-    post("#{Config::OLLAMA_URL}/api/chat", {model: model, messages: messages, stream: false})
+  def self.chat(model, messages, options: nil)
+    body = {model: model, messages: messages, stream: false}
+    body[:options] = options if options
+    post("#{Config::OLLAMA_URL}/api/chat", body)
       .dig("message", "content")&.strip
   end
 

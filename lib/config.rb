@@ -4,6 +4,11 @@
 module Config
   OLLAMA_URL = "http://localhost:11434"
   VISION_MODEL = "qwen3-vl:8b"
+  # Per-request context window for vision calls. Set explicitly so we don't
+  # depend on the Ollama server default (the desktop app's UI slider), which
+  # silently overrides any OLLAMA_CONTEXT_LENGTH env var. 32k gives headroom
+  # for image tokens + prompt + output without wasting KV cache RAM.
+  VISION_NUM_CTX = 32768
   IMAGINE_MODEL = "gemma4:12b-mlx"
   # Small text model for the regen subject/style fuse — a constrained rewrite,
   # so a fast 3B is plenty (no need for the heavier imagine model).

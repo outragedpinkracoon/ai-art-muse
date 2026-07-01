@@ -61,13 +61,13 @@ class Critique
 
   # Single-turn vision call — sends prompt + images, returns text response
   def vision_generate(prompt, image_paths)
-    Ollama.generate(Config::VISION_MODEL, prompt, images: image_paths.map { |p| Ollama.encode_image(p) })
+    Ollama.generate(Config::VISION_MODEL, prompt, images: image_paths.map { |p| Ollama.encode_image(p) }, options: {num_ctx: Config::VISION_NUM_CTX})
   end
 
   # Multi-turn chat call — sends full message history, image sent in first message only
   def vision_chat(messages)
     formatted = messages.map { |m| {role: m[:role], content: m[:content], images: m[:images]}.compact }
-    Ollama.chat(Config::VISION_MODEL, formatted)
+    Ollama.chat(Config::VISION_MODEL, formatted, options: {num_ctx: Config::VISION_NUM_CTX})
   end
 
   # Full structured critique using persona + critique format prompts
