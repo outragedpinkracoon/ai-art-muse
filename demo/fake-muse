@@ -39,7 +39,7 @@ case "$cmd" in
     echo "Saved: output/output_003.png"
     ;;
   critique)
-    echo "Critiquing... (qwen2.5vl:7b)"
+    echo "Critiquing... (qwen3-vl:8b)"
     type_pause 1.0
     cat <<'EOF'
 A charming, characterful piece. The eyepatch and tricorn hat read instantly

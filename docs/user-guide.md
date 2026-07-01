@@ -325,7 +325,7 @@ muse critique image_a.png image_b.png
 
 ### Model
 
-Uses the configured vision model (`VISION_MODEL`, `qwen2.5vl:7b`), loaded on demand and stopped automatically when the command exits — in every mode, and even if it errors out — so it never stays resident.
+Uses the configured vision model (`VISION_MODEL`, `qwen3-vl:8b`), loaded on demand and stopped automatically when the command exits — in every mode, and even if it errors out — so it never stays resident.
 
 ---
 
@@ -351,7 +351,7 @@ Models muse uses (configured in lib/config.rb):
     flux2-klein-4b                                                  generate, edit
 
   OPTIONAL  (pull only what you want; each unlocks its commands)
-    qwen2.5vl:7b                                                    critique
+    qwen3-vl:8b                                                    critique
     qwen2.5:3b                                                      regen, restyle
     gemma4:12b-mlx                                                  imagine
 ```
@@ -363,7 +363,7 @@ Model names are hardcoded in `lib/config.rb`, not environment variables — edit
 | Constant | Role | Default |
 |----------|------|---------|
 | `IMAGE_MODEL` | Image generation (txt2img + edit) via mflux | `flux2-klein-4b` |
-| `VISION_MODEL` | Vision critique / compare / chat | `qwen2.5vl:7b` |
+| `VISION_MODEL` | Vision critique / compare / chat | `qwen3-vl:8b` |
 | `REGEN_MODEL` | regen / restyle subject + style rewrites | `qwen2.5:3b` |
 | `IMAGINE_MODEL` | imagine prompt chat | `gemma4:12b-mlx` |
 

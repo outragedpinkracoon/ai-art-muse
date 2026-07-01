@@ -3,7 +3,7 @@
 # nothing else hard-codes these values.
 module Config
   OLLAMA_URL = "http://localhost:11434"
-  VISION_MODEL = "qwen2.5vl:7b"
+  VISION_MODEL = "qwen3-vl:8b"
   IMAGINE_MODEL = "gemma4:12b-mlx"
   # Small text model for the regen subject/style fuse — a constrained rewrite,
   # so a fast 3B is plenty (no need for the heavier imagine model).

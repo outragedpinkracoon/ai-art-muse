@@ -52,7 +52,7 @@ ollama list
 ollama serve
 
 # Try pulling again
-ollama pull qwen2.5vl:7b
+ollama pull qwen3-vl:8b
 ```
 
 ---
@@ -175,7 +175,7 @@ ollama ps
 
 # If not, it should load automatically on first critique
 # If it hangs, try pulling manually
-ollama pull qwen2.5vl:7b
+ollama pull qwen3-vl:8b
 ```
 
 ### Imagine model too slow

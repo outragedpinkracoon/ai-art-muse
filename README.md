@@ -61,7 +61,7 @@ export HF_TOKEN="your_token_here"      # get one at huggingface.co/settings/toke
 That's enough to run `muse generate`. Want the extra commands? Each is one optional model — pull only what you'll use:
 
 ```bash
-ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
+ollama pull qwen3-vl:8b                                                    # unlocks: critique / compare
 ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
 ollama pull gemma4:12b-mlx                                                  # unlocks: imagine
 ```

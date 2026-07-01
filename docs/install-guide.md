@@ -65,7 +65,7 @@ and cache locally, and `muse` works fine without them (the matching command just
 won't be available until you pull its model):
 
 ```bash
-ollama pull qwen2.5vl:7b                                                    # unlocks: critique / compare
+ollama pull qwen3-vl:8b                                                    # unlocks: critique / compare
 ollama pull qwen2.5:3b                                                      # unlocks: regen / restyle
 ollama pull gemma4:12b-mlx                                                  # unlocks: imagine
 ```
@@ -73,7 +73,7 @@ ollama pull gemma4:12b-mlx                                                  # un
 | Model | Unlocks | Required? | Source | Approx size |
 |---|---|---|---|---|
 | `flux2-klein-4b` | `generate` + `--edit` | **Required** | Hugging Face via mflux (`black-forest-labs/FLUX.2-klein-4B`) | ~16GB |
-| `qwen2.5vl:7b` | `critique` / `compare` | Optional | Ollama | ~6GB |
+| `qwen3-vl:8b` | `critique` / `compare` | Optional | Ollama | ~6GB |
 | `qwen2.5:3b` | `regen` / `restyle` | Optional | Ollama | ~2GB |
 | `gemma4:12b-mlx` | `imagine` | Optional | Ollama | ~8GB |
 
@@ -125,6 +125,6 @@ Tools:
 Models:
 
 - `flux2-klein-4b` (image) — https://huggingface.co/black-forest-labs/FLUX.2-klein-4B
-- `qwen2.5vl:7b` (vision) — https://ollama.com/library/qwen2.5vl
+- `qwen3-vl:8b` (vision) — https://ollama.com/library/qwen3-vl
 - `qwen2.5:3b` (regen/restyle) — https://ollama.com/library/qwen2.5
 - `gemma4:12b-mlx` (imagine) — https://ollama.com/library/gemma4
