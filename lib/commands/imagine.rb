@@ -33,7 +33,7 @@ class Imagine
 
   # Sends the running message history to the text model and returns its reply.
   def imagine_chat(messages)
-    Ollama.chat(Config::IMAGINE_MODEL, messages)
+    Ollama.chat(Config::IMAGINE_MODEL, messages, options: {num_ctx: Config::OLLAMA_NUM_CTX})
   end
 
   # Interactive loop: qwen asks focused visual questions one at a time, then emits

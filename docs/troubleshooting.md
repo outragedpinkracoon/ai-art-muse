@@ -178,14 +178,14 @@ ollama ps
 ollama pull qwen3-vl:8b
 ```
 
-### Setting Ollama context length has no effect on critique
+### Setting Ollama context length has no effect
 
-`critique`, `compare`, and vision chat set their context window per request
-(`VISION_NUM_CTX` in `lib/config.rb`, 32k by default). This is deliberate — it
-overrides the Ollama server default so results don't depend on which server owns
-the port. As a result, a context length set in the **Ollama desktop app UI** or
-via **`OLLAMA_CONTEXT_LENGTH`** in your shell profile is ignored for vision
-calls. To change it, edit `VISION_NUM_CTX`.
+`critique`, `compare`, `imagine`, and chat all set their context window per
+request (`OLLAMA_NUM_CTX` in `lib/config.rb`, 32k by default). This is
+deliberate — it overrides the Ollama server default so results don't depend on
+which server owns the port. As a result, a context length set in the **Ollama
+desktop app UI** or via **`OLLAMA_CONTEXT_LENGTH`** in your shell profile is
+ignored. To change it, edit `OLLAMA_NUM_CTX`.
 
 ### Imagine model too slow
 
