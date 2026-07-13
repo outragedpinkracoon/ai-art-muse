@@ -10,7 +10,7 @@ module Config
   # var. 32k gives headroom for image tokens + prompt + a multi-turn session
   # without wasting KV cache RAM.
   OLLAMA_NUM_CTX = 32768
-  IMAGINE_MODEL = "gemma4:12b-mlx"
+  IMAGINE_MODEL = "gemma4:e4b-mlx"
   # Small text model for the regen subject/style fuse — a constrained rewrite,
   # so a fast 3B is plenty (no need for the heavier imagine model).
   REGEN_MODEL = "qwen2.5:3b"
